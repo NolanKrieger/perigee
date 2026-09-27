@@ -1,0 +1,123 @@
+{
+  "music": [
+    {
+      "name": "music_pad",
+      "loop": true,
+      "seconds": 31.5,
+      "peak": 0.55
+    },
+    {
+      "name": "music_swell",
+      "loop": true,
+      "seconds": 31.5,
+      "peak": 0.5
+    },
+    {
+      "name": "music_pulse",
+      "loop": true,
+      "seconds": 31.5,
+      "peak": 0.6
+    },
+    {
+      "name": "music_storm",
+      "loop": true,
+      "seconds": 31.5,
+      "peak": 0.55
+    }
+  ],
+  "engine": [
+    {
+      "name": "engine_air",
+      "loop": true,
+      "seconds": 5.2,
+      "peak": 0.7
+    },
+    {
+      "name": "engine_vac",
+      "loop": true,
+      "seconds": 5.2,
+      "peak": 0.55
+    }
+  ],
+  "sfx": [
+    {
+      "name": "sfx_stage",
+      "loop": false,
+      "seconds": 0.9,
+      "peak": 0.8
+    },
+    {
+      "name": "sfx_dock",
+      "loop": false,
+      "seconds": 0.8,
+      "peak": 0.8
+    },
+    {
+      "name": "sfx_undock",
+      "loop": false,
+      "seconds": 0.6,
+      "peak": 0.8
+    },
+    {
+      "name": "sfx_pump",
+      "loop": true,
+      "seconds": 2.35,
+      "peak": 0.5
+    },
+    {
+      "name": "sfx_beep",
+      "loop": false,
+      "seconds": 0.55,
+      "peak": 0.45
+    },
+    {
+      "name": "sfx_reentry",
+      "loop": true,
+      "seconds": 2.85,
+      "peak": 0.6
+    },
+    {
+      "name": "sfx_chute",
+      "loop": false,
+      "seconds": 0.9,
+      "peak": 0.8
+    },
+    {
+      "name": "sfx_legs",
+      "loop": false,
+      "seconds": 0.7,
+      "peak": 0.5
+    },
+    {
+      "name": "sfx_touchdown",
+      "loop": false,
+      "seconds": 0.8,
+      "peak": 0.8
+    },
+    {
+      "name": "sfx_crash",
+      "loop": false,
+      "seconds": 1.6,
+      "peak": 0.8
+    },
+    {
+      "name": "sfx_cash",
+      "loop": false,
+      "seconds": 1.2,
+      "peak": 0.5
+    },
+    {
+      "name": "sfx_warn",
+      "loop": false,
+      "seconds": 1.4,
+      "peak": 0.45
+    },
+    {
+      "name": "sfx_click",
+      "loop": false,
+      "seconds": 0.08,
+      "peak": 0.35
+    }
+  ],
+  "sha256_wav": "f4ad83b3fd4d100a8d3a467da7fdd30cc2d90cd020e456f9626fd01bde2a8500"
+}

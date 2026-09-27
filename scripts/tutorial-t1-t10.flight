@@ -1,0 +1,303 @@
+# M8 regression: the tutorial chain T1–T10 (GDD §11), each lesson accepted from the board and completed by flying.
+# T1–T7 fly on starter parts (+ grid fins, port and RCS); the first M-class parts are the T8 depot and tanker (see docs/career-sim.md).
+# Test tool only (decision #16). Orbital set-ups use `spawn`; launches, ascents, docking, landings run through the input path.
+expect offers >= 3 and tutorial_step == 1
+# ---------------------------------------------------------------- T1 Sounding Rocket: 20 km and a safe landing
+accept T1
+expect contracts_active == 1
+launch sounding Hopper
+view zoom 30
+shot t1-pad
+tap throttle_full
+stage
+until alt > 20000 timeout 120
+until vspeed < 0 timeout 300
+tap throttle_cut
+until alt < 4000 timeout 900
+until speed < 135 timeout 300
+tap chutes
+until landed == 1 timeout 900
+until tutorial_step == 2 timeout 5
+expect tutorial_step == 2 and contracts_done == 1
+log T1 done
+# ---------------------------------------------------------------- T2 Space Is Up + T3 First Orbit (one flight)
+accept T2
+launch orbital Orbiter
+tap throttle_full
+stage
+until alt > 800 timeout 60
+press rotate_right
+until pitch > 4 timeout 10
+release rotate_right
+until alt > 6000 timeout 90
+press rotate_right
+until pitch > 15 timeout 10
+release rotate_right
+until alt > 12000 timeout 90
+press rotate_right
+until pitch > 28 timeout 10
+release rotate_right
+until alt > 20000 timeout 90
+press rotate_right
+until pitch > 42 timeout 10
+release rotate_right
+until engines == 0 or alt > 34000 timeout 200
+tap throttle_cut
+stage
+until alt > 40000 or vspeed < 40 timeout 300
+attitude pitch 62
+tap throttle_full
+until alt > 50000 timeout 200
+until tutorial_step == 3 timeout 5
+expect tutorial_step == 3 and contracts_done == 2
+log T2 done
+accept T3
+until alt > 56000 or apo > 105000 timeout 200
+attitude pitch 82
+until apo > 105000 timeout 200
+tap throttle_cut
+attitude off
+until vspeed < 150 timeout 900
+attitude pitch 93
+tap throttle_full
+until peri > 95000 timeout 120
+tap throttle_cut
+attitude off
+until rails == 1 timeout 30
+until tutorial_step == 4 timeout 5
+expect tutorial_step == 4 and contracts_done == 3
+view zoom 0.0022
+shot t3-orbit
+log T3 done
+# ---------------------------------------------------------------- T4 Comsat: client relay into a 200–300 km orbit (starter parts: S relay stack)
+accept T4
+launch comsat-s Comsat
+view zoom 8
+shot t4-pad
+tap throttle_full
+stage
+until alt > 800 timeout 60
+press rotate_right
+until pitch > 4 timeout 10
+release rotate_right
+until alt > 6000 timeout 90
+press rotate_right
+until pitch > 14 timeout 10
+release rotate_right
+until alt > 12000 timeout 120
+press rotate_right
+until pitch > 26 timeout 10
+release rotate_right
+until alt > 20000 timeout 120
+press rotate_right
+until pitch > 40 timeout 10
+release rotate_right
+until engines == 0 or alt > 40000 timeout 300
+tap throttle_cut
+stage
+until alt > 45000 or vspeed < 40 timeout 300
+attitude pitch 60
+tap throttle_full
+until apo > 150000 timeout 300
+attitude pitch 78
+until apo > 245000 or fuelfrac < 0.03 timeout 300
+tap throttle_cut
+attitude off
+log T4 coasting to apoapsis
+until t_apo < 25 timeout 3000
+attitude pitch 90
+tap throttle_full
+until peri > 205000 or fuelfrac < 0.005 timeout 300
+tap throttle_cut
+attitude off
+expect peri > 200000 and apo < 300000
+until rails == 1 timeout 30
+until tutorial_step == 5 timeout 5
+expect tutorial_step == 5 and contracts_done == 4
+view zoom 0.0022
+shot t4-comsat
+log T4 done
+# ---------------------------------------------------------------- T5 Bring It Back: booster flashback to the pad
+accept T5
+launch recoverable-s Hopper
+tap throttle_full
+stage
+until alt > 500 timeout 60
+press rotate_right
+until pitch > 5 timeout 10
+release rotate_right
+until alt > 4000 timeout 60
+press rotate_right
+until pitch > 14 timeout 10
+release rotate_right
+until alt > 14000 or fuelfrac < 0.4 timeout 150
+tap throttle_cut
+stage
+expect held == 1
+attitude pitch 30
+tap throttle_full
+until apo > 62000 timeout 120
+tap throttle_cut
+attitude off
+until flashback_offered == 1 timeout 600
+flyback
+expect flashback == 1
+attitude pitch -90
+until pitch < -80 timeout 30
+tap throttle_full
+until impact_dist < 1200 timeout 60
+tap throttle_cut
+tap legs
+attitude up
+until vspeed < 0 timeout 300
+until agl < 7000 timeout 900
+attitude retrograde
+until agl < 2600 timeout 300
+descent -40
+until agl < 220 timeout 120
+attitude up
+descent -10
+until agl < 40 timeout 60
+descent -4
+until flashback == 0 timeout 60
+descent off
+attitude off
+active Hopper stage
+expect landed == 1 and pad_dist > -5000 and pad_dist < 5000
+view zoom 10
+shot t5-booster-landed
+recover
+until tutorial_step == 6 timeout 5
+expect tutorial_step == 6 and contracts_done == 5
+log T5 done
+# ---------------------------------------------------------------- T6 Handshake: dock with the client test target
+accept T6
+active Test Target
+spawn tanker Chaser orbit match phase -0.03 fuel 1
+target Test Target
+expect target_dist > 150 and target_dist < 500
+tap rcs
+attitude target
+approach on
+until docked >= 1 timeout 900
+approach off
+attitude off
+until tutorial_step == 7 timeout 5
+expect tutorial_step == 7 and contracts_done == 6
+view zoom 12
+shot t6-docked
+log T6 done
+undock
+until docked == 0 timeout 5
+# ---------------------------------------------------------------- T7 Top Up: pump 2 t into the client satellite
+accept T7
+active Client Sat
+spawn tanker2 Chaser2 orbit match phase -0.03 fuel 1
+target Client Sat
+tap rcs
+attitude target
+approach on
+until docked >= 1 timeout 900
+approach off
+attitude off
+pump tank-s-long:1 tank-m-medium:1 methalox
+pump tank-s-short:1 tank-m-medium:1 methalox
+until tutorial_step == 8 timeout 120
+expect tutorial_step == 8 and contracts_done == 7
+undock
+until docked == 0 timeout 5
+log T7 done
+# ---------------------------------------------------------------- T8 Gas Station: depot in low orbit sells 10 t (tanker → depot → sale)
+accept T8
+spawn depot Depot orbit 130000 phase 0 fuel 0
+active Depot
+spawn tankerm TankerM orbit match phase -0.03 fuel 1
+target Depot
+tap rcs
+attitude target
+approach on
+until docked >= 1 timeout 1200
+approach off
+attitude off
+pump tank-m-long:1 tank-m-long:2 methalox
+until pumped >= 10 timeout 120
+undock
+until docked == 0 timeout 5
+active Depot
+sell methalox 10
+until tutorial_step == 9 timeout 5
+expect tutorial_step == 9 and contracts_done == 8
+log T8 done
+# ---------------------------------------------------------------- T9 Touchdown: land a probe on Vell
+accept T9
+active Depot
+spawn lander Lander orbit 120000 phase 0 fuel 1
+stage
+target Vell
+until target_phase > 111 and target_phase < 115 timeout 3000
+attitude prograde
+wait 6
+tap throttle_full
+until next_body == 2 or apo > 11900000 timeout 300
+tap throttle_cut
+attitude off
+expect next_body == 2
+warp 4
+until body == 2 timeout 300000
+warp 0
+log T9 in Vell SOI
+periapsis 20000 4000 900
+warp 3
+until t_peri < 120 timeout 200000
+warp 0
+attitude retrograde
+wait 8
+tap throttle_full
+until apo < 45000 timeout 300
+tap throttle_cut
+log T9 captured
+view zoom 0.02
+shot t9-vell-orbit
+tap throttle_full
+until hspeed < 8 timeout 300
+descent -40
+until agl < 3000 timeout 900
+descent -12
+until agl < 150 timeout 300
+attitude up
+descent -3
+until landed == 1 timeout 300
+descent off
+attitude off
+expect landed == 1 and alive == 1 and body == 2
+until tutorial_step == 10 timeout 5
+expect tutorial_step == 10 and contracts_done == 9
+view zoom 12
+shot t9-landed
+log T9 done
+# ---------------------------------------------------------------- T10 Dig: outpost + drill on the nearest ice deposit
+accept T10
+spawn outpost-t10 Outpost orbit 25000 phase 0 fuel 1
+stage
+tap legs
+until ice_dist < 12000 and ice_dist > 0 timeout 5000
+attitude retrograde
+wait 3
+tap throttle_full
+until hspeed < 8 timeout 300
+descent -40
+until agl < 3000 timeout 900
+descent -12
+until agl < 150 timeout 300
+attitude up
+descent -3
+until landed == 1 timeout 300
+descent off
+attitude off
+expect landed == 1 and alive == 1 and in_ice == 1
+until tutorial_step == 11 timeout 5
+expect tutorial_step == 11 and contracts_done == 10 and contracts_failed == 0
+view zoom 12
+shot t10-outpost
+log T10 done
+end

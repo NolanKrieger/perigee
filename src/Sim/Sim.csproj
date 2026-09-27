@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Pure C# simulation: no Godot types, so it builds, tests and replays headless and deterministically. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Perigee.Sim</RootNamespace>
+    <AssemblyName>Perigee.Sim</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Perigee" />
+    <InternalsVisibleTo Include="Perigee.Sim.Tests" />
+    <InternalsVisibleTo Include="Flight" />
+  </ItemGroup>
+</Project>

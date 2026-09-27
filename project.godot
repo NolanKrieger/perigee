@@ -1,0 +1,36 @@
+; Engine configuration file.
+
+config_version=5
+
+[application]
+
+config/name="Perigee Fuel Co."
+config/version="0.9.0-rc1"
+config/description="2D rocketry and fuel logistics in a generated star system."
+run/main_scene="res://game/Main.tscn"
+config/features=PackedStringArray("4.7", "C#", "Mobile")
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/window_width_override=1600
+window/size/window_height_override=900
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+
+[dotnet]
+
+project/assembly_name="Perigee"
+
+[physics]
+
+common/physics_ticks_per_second=50
+common/max_physics_steps_per_frame=8
+
+[rendering]
+
+renderer/rendering_method="mobile"
+renderer/rendering_method.mobile="mobile"
+anti_aliasing/quality/msaa_2d=2
+environment/defaults/default_clear_color=Color(0.043, 0.055, 0.094, 1)

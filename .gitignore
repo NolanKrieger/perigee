@@ -1,0 +1,15 @@
+.godot/
+bin/
+obj/
+*.user
+build/
+*.tmp
+
+# Local output, caches, and credentials
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+!.env.sample
+.godot/export_credentials.cfg

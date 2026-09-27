@@ -1,0 +1,56 @@
+# M11 regression: a solar storm at Vell (outside home's magnetosphere). One station parks in Vell's shadow cone and rides it out;
+# an identical station in sunlight is fried and reboots days later. Test tool only (decision #16).
+tutorial 11
+spawn lander Lander orbit 120000 phase 0 fuel 1
+stage
+target Vell
+until target_phase > 111 and target_phase < 115 timeout 3000
+attitude prograde
+wait 6
+tap throttle_full
+until next_body == 2 or apo > 11900000 timeout 300
+tap throttle_cut
+attitude off
+warp 4
+until body == 2 timeout 300000
+warp 0
+periapsis 20000 4000 900
+warp 3
+until t_peri < 120 timeout 200000
+warp 0
+attitude retrograde
+wait 8
+tap throttle_full
+until apo < 45000 timeout 300
+tap throttle_cut
+attitude off
+expect body == 2
+# Two stations in a 40 km Vell orbit: the second half an orbit behind the first.
+spawn station Sunlit orbit 40000 phase 0 fuel 0.1
+spawn station Sheltered orbit 40000 phase 180 fuel 0.1
+active Sheltered
+expect safe == 0 or safe == 1
+# Wait until Sheltered is inside Vell's shadow, then call the storm (warning 0, one day, every exposed core fries).
+warp 2
+until in_shadow == 1 timeout 20000
+warp 0
+expect safe == 1
+active Sunlit
+expect in_shadow == 0 and safe == 0
+storm now 0 1 sure
+expect storm == 2
+expect fried == 1
+active Sheltered
+expect fried == 0
+view zoom 0.0028
+shot storm-vell
+log storm hit
+# The storm ends after a day; the fried core reboots within 3–5 days.
+active Sunlit
+warp 5
+until storm == 0 timeout 200000
+until fried == 0 timeout 500000
+warp 0
+expect fried == 0 and storm == 0
+log rebooted
+end

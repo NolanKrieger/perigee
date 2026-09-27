@@ -1,0 +1,22 @@
+# T1-style hop: sounding rocket to 20 km and back under the chute.
+launch sounding Hopper
+view zoom 30
+shot pad
+tap throttle_full
+stage
+until alt > 300 timeout 30
+view zoom 10
+shot launch
+until alt > 20000 timeout 120
+expect vspeed > 0
+until vspeed < 0 timeout 300
+tap throttle_cut
+log apex
+until alt < 4000 timeout 900
+until speed < 135 timeout 300
+tap chutes
+until landed == 1 timeout 900
+expect landed == 1 and parts >= 5
+view zoom 12
+shot landed
+end

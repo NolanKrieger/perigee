@@ -1,0 +1,43 @@
+# Career-model template (tools/CareerSim fills {ID} {APO_LO} {APO} {PERI} {DONE}): a generated "Deploy a relay at <home>" contract flown on the
+# starter-parts relay stack (comsat-s) into the contract's orbit window. Not a regression flight on its own.
+accept {ID}
+launch comsat-s Relay
+tap throttle_full
+stage
+until alt > 800 timeout 60
+press rotate_right
+until pitch > 4 timeout 10
+release rotate_right
+until alt > 6000 timeout 90
+press rotate_right
+until pitch > 14 timeout 10
+release rotate_right
+until alt > 12000 timeout 120
+press rotate_right
+until pitch > 26 timeout 10
+release rotate_right
+until alt > 20000 timeout 120
+press rotate_right
+until pitch > 40 timeout 10
+release rotate_right
+until engines == 0 or alt > 40000 timeout 300
+tap throttle_cut
+stage
+until alt > 45000 or vspeed < 40 timeout 300
+attitude pitch 60
+tap throttle_full
+until apo > {APO_LO} timeout 300
+attitude pitch 78
+until apo > {APO} or fuelfrac < 0.03 timeout 300
+tap throttle_cut
+attitude off
+until t_apo < 25 timeout 3000
+attitude pitch 90
+tap throttle_full
+until peri > {PERI} or fuelfrac < 0.005 timeout 300
+tap throttle_cut
+attitude off
+until rails == 1 timeout 30
+wait 1
+expect contracts_done >= {DONE}
+end

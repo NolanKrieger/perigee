@@ -1,0 +1,15 @@
+<Project Sdk="Godot.NET.Sdk/4.7.2">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <RootNamespace>Perigee</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- The sim, its tests and tools are separate projects; keep their sources out of the game assembly. -->
+    <Compile Remove="src/**;tests/**;tools/**;build/**" />
+    <ProjectReference Include="src/Sim/Sim.csproj" />
+  </ItemGroup>
+</Project>

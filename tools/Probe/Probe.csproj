@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><RootNamespace>Perigee.Probe</RootNamespace></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../../src/Sim/Sim.csproj" /></ItemGroup>
+</Project>

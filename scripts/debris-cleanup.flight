@@ -1,0 +1,54 @@
+# M11 regression: three debris objects share a 120 km home orbit with a tanker. It grabs one with the claw, deorbits it and lets go,
+# completing a cleanup contract; the other two decay on their own over the following days. Test tool only (decision #16).
+tutorial 11
+spawn clawtanker Sweeper orbit 120000 phase 0 fuel 1
+stage
+spawn junk Junk1 orbit 120000 phase -0.03 fuel 0
+spawn junk Junk2 orbit 57000 phase 40 fuel 0
+spawn junk Junk3 orbit 58000 phase 80 fuel 0
+active Sweeper
+expect debris == 3
+contract debris 1
+accept Clean
+expect contracts_active == 1
+target Junk1
+tap rcs
+attitude target
+approach on
+until docked_debris >= 1 timeout 900
+approach off
+attitude off
+expect docked_debris == 1 and debris == 2
+view zoom 8
+shot debris-grabbed
+log grabbed
+# Retrograde burn until the periapsis is deep in the atmosphere, then release the junk on its way down.
+attitude retrograde
+wait 8
+tap throttle_full
+until peri < 20000 timeout 120
+tap throttle_cut
+attitude off
+undock
+until docked_debris == 0 timeout 5
+expect debris == 3
+# Save the sweeper: prograde burn back to a safe periapsis while the junk continues down.
+attitude prograde
+wait 8
+tap throttle_full
+until peri > 60000 timeout 120
+tap throttle_cut
+attitude off
+expect peri > 60000
+warp 3
+until contracts_done == 1 timeout 200000
+warp 0
+expect contracts_done == 1 and debris == 2
+log cleaned
+# Decay: the two low pieces (periapsis under 1.2 × the 50 km atmosphere) sink and burn up over the following days.
+warp 6
+until debris == 0 timeout 1728000
+warp 0
+expect debris == 0
+log decayed
+end

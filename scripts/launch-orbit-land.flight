@@ -1,0 +1,94 @@
+# Regression flight: launch → orbit → deorbit → landing with the two-stage Orbiter from the home pad.
+# Test tool only (decision #16: players fly by hand). Pitch is degrees from local up, positive = prograde.
+launch orbital Orbiter
+expect landed == 1 and stage == 0
+view zoom 30
+shot pad
+tap throttle_full
+stage
+until alt > 150 timeout 60
+view zoom 10
+shot launch
+until alt > 800 timeout 60
+expect active == 1
+# Gravity turn: steep through the thick air (50 km atmosphere, 6 km scale height), flatten above it.
+press rotate_right
+until pitch > 4 timeout 10
+release rotate_right
+until alt > 6000 timeout 90
+press rotate_right
+until pitch > 15 timeout 10
+release rotate_right
+until alt > 7500 timeout 90
+view zoom 8
+shot maxq
+until alt > 12000 timeout 90
+press rotate_right
+until pitch > 28 timeout 10
+release rotate_right
+until alt > 20000 timeout 90
+press rotate_right
+until pitch > 42 timeout 10
+release rotate_right
+until engines == 0 or alt > 34000 timeout 200
+log booster done
+tap throttle_cut
+stage
+view zoom 6
+shot staging
+expect stage == 2
+until alt > 40000 or vspeed < 40 timeout 300
+attitude pitch 62
+tap throttle_full
+until alt > 56000 or apo > 105000 timeout 200
+attitude pitch 82
+until apo > 105000 timeout 200
+tap throttle_cut
+attitude off
+log coasting to apoapsis
+until vspeed < 150 timeout 900
+attitude pitch 93
+tap throttle_full
+until peri > 95000 timeout 120
+tap throttle_cut
+attitude off
+expect peri > 95000 and apo > 95000 and apo < 2000000
+log in orbit
+view zoom 0.0022
+shot orbit
+until rails == 1 timeout 30
+expect rails == 1
+warp 2
+wait 600
+warp 0
+log deorbit burn
+attitude pitch -90
+until pitch < -85 timeout 40
+tap throttle_full
+until peri < 15000 or fuel < 0.02 timeout 120
+tap throttle_cut
+attitude off
+expect peri < 30000
+stage
+expect stage == 3 and parts == 3
+log capsule separated, waiting for entry
+until active == 1 and alt < 49000 timeout 3600
+log reentry
+attitude pitch -90
+until temp > 800 or alt < 30000 timeout 900
+view zoom 40
+shot reentry
+until alt < 15000 or speed < 300 timeout 900
+expect alive == 1
+until speed < 135 timeout 300
+attitude off
+tap chutes
+wait 4
+view zoom 12
+shot chute
+until landed == 1 timeout 900
+expect landed == 1 and parts == 3
+log landed
+view zoom 24
+shot landed
+end

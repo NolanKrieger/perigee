@@ -1,0 +1,67 @@
+# M5 regression: fly the M booster home in a flashback and land it near the pad for a 90% refund (T5 "Bring It Back").
+launch recoverable Hopper
+view zoom 8
+shot pad
+tap throttle_full
+stage
+until alt > 500 timeout 60
+press rotate_right
+until pitch > 5 timeout 10
+release rotate_right
+until alt > 4000 timeout 60
+press rotate_right
+until pitch > 14 timeout 10
+release rotate_right
+until alt > 14000 or fuelfrac < 0.4 timeout 150
+log staging
+tap throttle_cut
+stage
+expect held == 1
+# Upper stage: push the apoapsis out of the air so it coasts on rails and the booster prompt appears.
+attitude pitch 30
+tap throttle_full
+until apo > 62000 timeout 120
+tap throttle_cut
+attitude off
+until flashback_offered == 1 timeout 600
+expect flashback_offered == 1
+flyback
+expect flashback == 1
+view zoom 6
+shot flashback-start
+log booster flashback
+# Boostback: nose horizontal uprange (pitch −90) and burn until the ballistic impact point is back near the pad.
+attitude pitch -90
+until pitch < -80 timeout 30
+tap throttle_full
+until impact_dist < 1200 timeout 60
+tap throttle_cut
+log boostback done
+expect impact_dist < 1500 and impact_dist > -3000
+tap legs
+expect legs == 1
+attitude up
+until vspeed < 0 timeout 300
+until agl < 7000 timeout 900
+shot booster-descent
+attitude retrograde
+until agl < 2600 timeout 300
+descent -40
+until agl < 220 timeout 120
+attitude up
+descent -10
+until agl < 40 timeout 60
+descent -4
+# The flashback ends the moment the booster lands; control returns to the upper stage.
+until flashback == 0 timeout 60
+descent off
+attitude off
+expect flashback == 0 and held == 0
+active Hopper stage
+expect landed == 1 and pad_dist > -5000 and pad_dist < 5000
+view zoom 10
+shot booster-landed
+recover
+expect refund > 90000
+log recovered
+end

@@ -1,0 +1,22 @@
+# Career-model mission (also a regression flight): one repeat supply trip — a TankerM rendezvous with the home-orbit Depot, pumps 10 t across,
+# undocks, and the depot sells 10 t at the low-orbit node. Assumes a craft named Depot in low home orbit (the tutorial's T8 leaves one).
+active Depot
+# Point the depot's port back along the orbit (its attitude drifts with every undock push); a player turns it the same way.
+attitude retrograde
+wait 45
+attitude off
+spawn tankerm TankerM orbit match phase -0.03 fuel 1
+target Depot
+tap rcs
+attitude target
+approach on
+until docked >= 1 timeout 1200
+approach off
+attitude off
+pump tank-m-long:1 tank-m-long:2 methalox
+until pumped >= 10 timeout 120
+undock
+until docked == 0 timeout 5
+active Depot
+sell methalox 10
+end

@@ -1,0 +1,33 @@
+# M4 regression: rendezvous, dock, pump, undock. A tanker starts 300 m behind a client station in a 120 km orbit.
+# The approach/attitude helpers are test tools that press the same RCS/rotate keys a player would.
+spawn station Station orbit 120000 phase 0 fuel 0.1
+target Station
+spawn tanker Tanker orbit 120000 phase -0.03 fuel 1
+target Station
+expect target_dist > 200 and target_dist < 400
+expect target_speed < 2
+tap rcs
+expect rcs == 1
+attitude target
+approach on
+view zoom 2
+until target_dist < 30 timeout 900
+shot approach
+until target_dist < 3 timeout 300
+until docked >= 1 timeout 240
+approach off
+attitude off
+view zoom 12
+shot docked
+expect docked >= 1 and crafts == 1
+log docked
+pump tank-s-short:1 tank-s-short:2 Methalox
+until pumped >= 0.45 timeout 60
+expect pumped >= 0.45
+log pumped
+undock
+until docked == 0 timeout 5
+expect crafts == 2
+wait 5
+expect target_dist > 0.5
+end
